@@ -60,7 +60,15 @@ public class PlayState extends State {
         }
         helicopter.update(dt);
         cam.position.set(helicopter.getPosition().x + (helicopter.getTexture().getWidth() / 2), helicopter.getPosition().y + (helicopter.getTexture().getHeight() / 2), 0);
-        cam.update();
+        for (Helicopter enemy : enemies) {
+            for (Helicopter other : enemies) {
+                if (enemy != other) {
+                    other.collides(enemy);
+                }
+            }
+            helicopter.collides(enemy);
+            cam.update();
+        }
     }
 
     @Override
@@ -78,6 +86,10 @@ public class PlayState extends State {
 
     @Override
     public void dispose() {
-
+        bg.dispose();
+        helicopter.dispose();
+        for (Helicopter enemy : enemies) {
+            enemy.dispose();
+        }
     }
 }

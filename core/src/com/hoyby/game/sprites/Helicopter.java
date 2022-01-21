@@ -11,14 +11,14 @@ import java.util.TimerTask;
 public class Helicopter {
     private final Vector3 position;
     private final Vector3 velocity;
-    private final Texture helicopter;
     private final HashMap<String, Integer> bounds;
+    private final Animation helicopterAnimation;
 
 
     public Helicopter(int x, int y, HashMap<String, Integer> bounds) {
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0, 0, 0);
-        helicopter = new Texture("helicopter/heli1.png");
+        helicopterAnimation = new Animation(0.5f);
         this.bounds = bounds;
     }
 
@@ -27,7 +27,7 @@ public class Helicopter {
     }
 
     public Texture getTexture() {
-        return helicopter;
+        return helicopterAnimation.getFrame();
     }
 
     public Vector3 getVelocity() {
@@ -38,14 +38,14 @@ public class Helicopter {
         if (position.y < bounds.get("minY")) {
             velocity.y = Math.abs(velocity.y);
             return false;
-        } else if (position.y > bounds.get("maxY") - helicopter.getHeight()) {
+        } else if (position.y > bounds.get("maxY") - helicopterAnimation.getFrame().getHeight()) {
             velocity.y = -Math.abs(velocity.y);
             return false;
         }
         if (position.x < bounds.get("minX")) {
             velocity.x = Math.abs(velocity.x);
             return false;
-        } else if (position.x > bounds.get("maxX") - helicopter.getWidth()) {
+        } else if (position.x > bounds.get("maxX") - helicopterAnimation.getFrame().getWidth()) {
             velocity.x = -Math.abs(velocity.x);
             return false;
         }
@@ -59,8 +59,22 @@ public class Helicopter {
         velocity.scl(dt);
         position.add(velocity.x, velocity.y, 0);
         validateCurrentPos();
+        helicopterAnimation.update(dt);
 
         velocity.scl(1 / dt);
+    }
+
+    public boolean collides(Helicopter other) {
+        if (other.getPosition().x > position.x + helicopterAnimation.getFrame().getWidth() || other.getPosition().x + other.getTexture().getWidth() < position.x) {
+            return false;
+        } else if (other.getPosition().y > position.y + helicopterAnimation.getFrame().getHeight() || other.getPosition().y + other.getTexture().getHeight() < position.y) {
+            return false;
+        } else {
+            other.getVelocity().x = (other.getPosition().x - position.x) * 3;
+            other.getVelocity().y = (other.getPosition().y - position.y) * 3;
+        }
+        return true;
+
     }
 
     public void flyTowards(int x, int y) {
@@ -70,16 +84,24 @@ public class Helicopter {
         }
     }
 
+    public Vector3 getRandomVelocity() {
+        final int speed = new Random().nextInt(800) + 200;
+        return new Vector3(new Random().nextInt(speed) - speed / 2, new Random().nextBoolean() ? -(speed / 2 - (Math.abs(velocity.x))) : speed / 2 - (Math.abs(velocity.x)), 0);
+    }
+
     public void flyRandom() {
-        final int speed = 1000;
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 // ensures constant velocity in a random direction
-                velocity.x = new Random().nextInt(speed) - speed / 2;
-                velocity.y = new Random().nextBoolean() ? -(speed / 2 - (Math.abs(velocity.x))) : speed / 2 - (Math.abs(velocity.x));
+                Vector3 newVelocity = getRandomVelocity();
+                velocity.x = newVelocity.x;
+                velocity.y = newVelocity.y;
             }
         }, 0, 3 * 1000);
+    }
+
+    public void dispose() {
+        helicopterAnimation.dispose();
     }
 }
