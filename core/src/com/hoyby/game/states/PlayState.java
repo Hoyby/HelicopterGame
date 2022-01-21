@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.hoyby.game.MyHeliGame;
 import com.hoyby.game.sprites.Helicopter;
 
 import java.util.ArrayList;
@@ -23,31 +22,38 @@ public class PlayState extends State {
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
+
         bg = new Texture("bg.jpg");
-        System.out.println(bg.getWidth() + " " + bg.getHeight());
+
         cam.setToOrtho(false, bg.getWidth() / 2, bg.getHeight() / 2);
+
         coords = new BitmapFont();
-        bounds.put("minX", -((bg.getWidth() / 2) - (MyHeliGame.WIDTH / 2)));
-        bounds.put("maxX", bounds.get("minX") + bg.getWidth());
-        bounds.put("minY", -((bg.getHeight() / 2) - (MyHeliGame.HEIGHT / 2)));
-        bounds.put("maxY", bounds.get("minY") + bg.getHeight());
-        helicopter = new Helicopter(50, 300, bounds);
+        coords.getData().setScale(1.8f);
+
+        bounds.put("minX", 0);
+        bounds.put("maxX", bg.getWidth());
+        bounds.put("minY", 0);
+        bounds.put("maxY", bg.getHeight());
+
+        helicopter = new Helicopter(bg.getWidth() / 2, bg.getHeight() / 2, bounds);
+
         for (int i = 0; i < 10; i++) {
-            enemies.add(new Helicopter(
+            Helicopter newEnemy = new Helicopter(
                     bounds.get("maxX") - new Random().nextInt(bg.getWidth()),
                     bounds.get("maxY") - new Random().nextInt(bg.getHeight()),
-                    bounds));
-        }
-        for (Helicopter enemy : enemies) {
-            enemy.flyRandom();
+                    bounds);
+            enemies.add(newEnemy);
+            newEnemy.flyRandom();
         }
     }
 
     @Override
     protected void handleInput() {
         if (Gdx.input.isTouched()) {
-            int x = bounds.get("minX") + (Gdx.input.getX() * (bg.getWidth() / MyHeliGame.WIDTH)) - (helicopter.getTexture().getWidth() / 2);
-            int y = bounds.get("maxY") - (Gdx.input.getY() * (bg.getHeight() / MyHeliGame.HEIGHT)) - (helicopter.getTexture().getHeight() / 2);
+            float xMultiplier = (float) bg.getWidth() / (float) Gdx.graphics.getWidth();
+            float yMultiplier = (float) bg.getHeight() / (float) Gdx.graphics.getHeight();
+            float x = Gdx.input.getX() * xMultiplier - helicopter.getTexture().getWidth() / 2;
+            float y = bg.getHeight() - (Gdx.input.getY() * yMultiplier) - helicopter.getTexture().getHeight() / 2;
             helicopter.flyTowards(x, y);
         }
     }
@@ -75,7 +81,7 @@ public class PlayState extends State {
     public void render(SpriteBatch sb) {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
-        sb.draw(bg, -((bg.getWidth() / 2) - (MyHeliGame.WIDTH / 2)), -((bg.getHeight() / 2) - (MyHeliGame.HEIGHT / 2)));
+        sb.draw(bg, 0, 0);
         sb.draw(helicopter.getTexture(), helicopter.getVelocity().x > 0 ? helicopter.getPosition().x + helicopter.getTexture().getWidth() : helicopter.getPosition().x, helicopter.getPosition().y, helicopter.getVelocity().x > 0 ? -helicopter.getTexture().getWidth() : helicopter.getTexture().getWidth(), helicopter.getTexture().getHeight());
         for (Helicopter enemy : enemies) {
             sb.draw(enemy.getTexture(), enemy.getVelocity().x > 0 ? enemy.getPosition().x + enemy.getTexture().getWidth() : enemy.getPosition().x, enemy.getPosition().y, enemy.getVelocity().x > 0 ? -enemy.getTexture().getWidth() : helicopter.getTexture().getWidth(), helicopter.getTexture().getHeight());
@@ -88,6 +94,7 @@ public class PlayState extends State {
     public void dispose() {
         bg.dispose();
         helicopter.dispose();
+        coords.dispose();
         for (Helicopter enemy : enemies) {
             enemy.dispose();
         }

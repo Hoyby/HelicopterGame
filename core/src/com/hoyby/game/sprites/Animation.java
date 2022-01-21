@@ -3,24 +3,20 @@ package com.hoyby.game.sprites;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 
-import java.io.File;
-import java.util.Objects;
-
 public class Animation {
     private final Array<Texture> frames;
     private final float maxFrameTime;
-    private final int frameCount;
     private float currentFrameTime;
     private int frame;
 
     public Animation(float cycleTime) {
         frames = new Array<>();
-        String[] framePaths = Objects.requireNonNull(new File("./android/assets/helicopter/").list());
-        for (String pathname : framePaths) {
-            frames.add(new Texture("helicopter/" + pathname));
-        }
-        this.frameCount = framePaths.length;
-        maxFrameTime = cycleTime / frameCount;
+        frames.add(new Texture("helicopter/heli1.png"));
+        frames.add(new Texture("helicopter/heli2.png"));
+        frames.add(new Texture("helicopter/heli3.png"));
+        frames.add(new Texture("helicopter/heli4.png"));
+
+        maxFrameTime = cycleTime / frames.size;
         frame = 0;
     }
 
@@ -30,7 +26,7 @@ public class Animation {
             frame++;
             currentFrameTime = 0;
         }
-        if (frame >= frameCount) {
+        if (frame >= frames.size) {
             frame = 0;
         }
     }

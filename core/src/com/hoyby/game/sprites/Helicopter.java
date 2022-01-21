@@ -77,7 +77,7 @@ public class Helicopter {
 
     }
 
-    public void flyTowards(int x, int y) {
+    public void flyTowards(float x, float y) {
         if (validateCurrentPos()) {
             velocity.y = y - position.y;
             velocity.x = x - position.x;

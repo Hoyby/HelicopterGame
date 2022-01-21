@@ -3,18 +3,18 @@ package com.hoyby.game.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.hoyby.game.MyHeliGame;
 
 public class MenuState extends State {
     private final Texture background;
     private final Texture playBtn;
 
+
     public MenuState(GameStateManager gsm) {
         super(gsm);
         background = new Texture("bg.jpg");
         playBtn = new Texture("playbtn.png");
+        cam.setToOrtho(false, background.getWidth() / 2, background.getHeight() / 2);
     }
-
 
     @Override
     protected void handleInput() {
@@ -30,9 +30,10 @@ public class MenuState extends State {
 
     @Override
     public void render(SpriteBatch sb) {
+        sb.setProjectionMatrix(cam.combined);
         sb.begin();
-        sb.draw(background, 0, 0, MyHeliGame.WIDTH, MyHeliGame.HEIGHT);
-        sb.draw(playBtn, (MyHeliGame.WIDTH / 2) - (playBtn.getWidth() / 2), (MyHeliGame.HEIGHT / 2));
+        sb.draw(background, 0, -background.getHeight() / 4);
+        sb.draw(playBtn, cam.position.x - (playBtn.getWidth() / 2), (cam.position.y));
         sb.end();
     }
 
