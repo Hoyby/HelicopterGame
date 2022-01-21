@@ -1,1 +1,0 @@
-java -jar ./gdx-setup_latest.jar
