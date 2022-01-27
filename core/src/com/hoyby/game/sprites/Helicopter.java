@@ -5,8 +5,6 @@ import com.badlogic.gdx.math.Vector3;
 
 import java.util.HashMap;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Helicopter {
     private final Vector3 position;
@@ -86,19 +84,14 @@ public class Helicopter {
 
     public Vector3 getRandomVelocity() {
         final int speed = new Random().nextInt(800) + 200;
-        return new Vector3(new Random().nextInt(speed) - speed / 2, new Random().nextBoolean() ? -(speed / 2 - (Math.abs(velocity.x))) : speed / 2 - (Math.abs(velocity.x)), 0);
+        return new Vector3(new Random().nextInt(speed) - speed / 2f, new Random().nextBoolean() ? -(speed / 2f - (Math.abs(velocity.x))) : speed / 2f - (Math.abs(velocity.x)), 0);
     }
 
     public void flyRandom() {
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                // ensures constant velocity in a random direction
-                Vector3 newVelocity = getRandomVelocity();
-                velocity.x = newVelocity.x;
-                velocity.y = newVelocity.y;
-            }
-        }, 0, 3 * 1000);
+        // ensures constant velocity in a random direction
+        Vector3 newVelocity = getRandomVelocity();
+        velocity.x = newVelocity.x;
+        velocity.y = newVelocity.y;
     }
 
     public void dispose() {

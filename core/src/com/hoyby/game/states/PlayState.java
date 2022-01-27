@@ -25,7 +25,7 @@ public class PlayState extends State {
 
         bg = new Texture("bg.jpg");
 
-        cam.setToOrtho(false, bg.getWidth() / 2, bg.getHeight() / 2);
+        cam.setToOrtho(false, bg.getWidth() / 2f, bg.getHeight() / 2f);
 
         coords = new BitmapFont();
         coords.getData().setScale(1.8f);
@@ -52,8 +52,8 @@ public class PlayState extends State {
         if (Gdx.input.isTouched()) {
             float xMultiplier = (float) bg.getWidth() / (float) Gdx.graphics.getWidth();
             float yMultiplier = (float) bg.getHeight() / (float) Gdx.graphics.getHeight();
-            float x = Gdx.input.getX() * xMultiplier - helicopter.getTexture().getWidth() / 2;
-            float y = bg.getHeight() - (Gdx.input.getY() * yMultiplier) - helicopter.getTexture().getHeight() / 2;
+            float x = Gdx.input.getX() * xMultiplier - helicopter.getTexture().getWidth() / 2f;
+            float y = bg.getHeight() - (Gdx.input.getY() * yMultiplier) - helicopter.getTexture().getHeight() / 2f;
             helicopter.flyTowards(x, y);
         }
     }
@@ -65,7 +65,7 @@ public class PlayState extends State {
             e.update(dt);
         }
         helicopter.update(dt);
-        cam.position.set(helicopter.getPosition().x + (helicopter.getTexture().getWidth() / 2), helicopter.getPosition().y + (helicopter.getTexture().getHeight() / 2), 0);
+        cam.position.set(helicopter.getPosition().x + (helicopter.getTexture().getWidth() / 2f), helicopter.getPosition().y + (helicopter.getTexture().getHeight() / 2f), 0);
         for (Helicopter enemy : enemies) {
             for (Helicopter other : enemies) {
                 if (enemy != other) {

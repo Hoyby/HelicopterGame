@@ -13,7 +13,7 @@ public class MenuState extends State {
         super(gsm);
         background = new Texture("bg.jpg");
         playBtn = new Texture("playbtn.png");
-        cam.setToOrtho(false, background.getWidth() / 2, background.getHeight() / 2);
+        cam.setToOrtho(false, background.getWidth() / 2f, background.getHeight() / 2f);
     }
 
     @Override
@@ -32,8 +32,8 @@ public class MenuState extends State {
     public void render(SpriteBatch sb) {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
-        sb.draw(background, 0, -background.getHeight() / 4);
-        sb.draw(playBtn, cam.position.x - (playBtn.getWidth() / 2), (cam.position.y));
+        sb.draw(background, 0, -background.getHeight() / 4f);
+        sb.draw(playBtn, cam.position.x - (playBtn.getWidth() / 2f), (cam.position.y));
         sb.end();
     }
 
